@@ -12,14 +12,14 @@ resource "aws_instance" "example" {
         destination = "/tmp/script.sh" #inside the virtual machine it is launching in tmp directory it will store your shell script
     }
     provisioner "remote-exec" { #once the instance is being launch we need to run the shell script
-        inline = [ #inline will read your shell script line by line
-            "chmod +x /tmp/script.sh" #we will make the shell script executable
+        inline = [
+            "chmod +x /tmp/script.sh", #we will make the shell script executable
             "sudo sed -i -e 's/\r$//' /tmp/script.sh",  # Remove the spurious CR characters.
               "sudo /tmp/script.sh",
         ]
     }
    connection {
-       host = coalesce(self.public_ip,self.private.ip)
+       host = coalesce(self.public_ip, self.private_ip)
        type = "ssh"
        user = var.INSTANCE_USERNAME
        private_key = file(var.PATH_TO_PRIVATE_KEY)
